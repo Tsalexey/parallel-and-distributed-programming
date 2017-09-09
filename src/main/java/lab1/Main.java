@@ -1,9 +1,7 @@
 package lab1;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by Alexey on 08.09.2017.
@@ -34,6 +32,7 @@ public class Main {
                     one(args);
                     break;
                 case 2:
+                    two();
                     break;
                 case 3:
                     three(args);
@@ -45,6 +44,7 @@ public class Main {
         } catch (Exception e){
             System.out.println("Wrong input!");
         }
+
         System.out.println("Lab #1, end of work");
     }
 
@@ -54,16 +54,12 @@ public class Main {
         } else {
             int sleepTime = 3; // sec
 
-
-
             List<MyThread> threads = new ArrayList<MyThread>();
             for (int i = 0; i < Integer.parseInt(args[0]); i++){
                 MyThread t = new MyThread(i + 1, sleepTime);
                 threads.add(t);
             }
-            for (MyThread t: threads){
-                t.start();
-            }
+            threads.forEach(Thread::start);
             System.out.println();
             for (MyThread t: threads){
                 t.join();
@@ -73,8 +69,14 @@ public class Main {
         }
     }
 
-    public static void two(){
-
+    public static void two() throws InterruptedException {
+        System.out.println("Daemon created");
+        DaemonThread daemonThread = new DaemonThread();
+        daemonThread.setDaemon(true);
+        System.out.println("Daemon started");
+        daemonThread.start();
+        System.out.println("Main thread: sleep for 10 sec");
+        Thread.sleep(10*1000);
     }
 
     public static void three(String[] args) throws InterruptedException {
@@ -82,20 +84,21 @@ public class Main {
             System.out.println("You must pass one command line parameter!");
         } else {
             MutexDeque deque = new MutexDeque();
+            int repeats = 3;
 
-            List<DequeThread> threads = new ArrayList<DequeThread>();
+            List<Thread> threads = new ArrayList<>();
             for (int i = 0; i < Integer.parseInt(args[0]); i++){
-                DequeThread t = new DequeThread(deque);
-                t.setName("#" + i);
+                Thread t = new Thread(new DequeThread(deque, "#" + i, repeats));
                 threads.add(t);
             }
-            for (DequeThread t: threads){
-                t.start();
-            }
 
-            for (DequeThread t: threads){
+            threads.forEach(Thread::start);
+            for (Thread t: threads){
                 t.join();
             }
+
+            System.out.println("Resulting deque:");
+            deque.print();
         }
 
     }
