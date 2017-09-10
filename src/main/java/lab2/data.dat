@@ -1,0 +1,13 @@
+n=100 #number of intervals
+max=3. #max value
+min=-3. #min value
+width=(max-min)/n #interval width
+#function used to map a value to the intervals
+hist(x,width)=width*floor(x/width)+width/2.0
+set boxwidth width*0.9
+
+#count and plot
+plot "result.dat" u (hist($1,width)):(1.0) smooth freq w boxes lc rgb"green" t 'LCG',\
+ "result.dat" u (hist($2,width)):(1.0) smooth freq w boxes lc rgb"red" t 'xorshift',\
+ "result.dat" u (hist($3,width)):(1.0) smooth freq w boxes lc rgb"black" t 'xorshift*',\
+   "result.dat" u (hist($4,width)):(1.0) smooth freq w boxes lc rgb"blue" t 'xorshift+'
