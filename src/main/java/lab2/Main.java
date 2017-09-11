@@ -33,19 +33,16 @@ public class Main {
         secureRandom.nextBytes(bytes2);
         // init generators
         LCG lcg = new LCG(Longs.fromByteArray(bytes1));
-        Xorshift xorshift = new Xorshift(bytes1);
         XorshiftAsterisk xorshiftAsterisk = new XorshiftAsterisk(bytes1);
         XorshiftPlus xorshiftPlus = new XorshiftPlus(bytes1, bytes2);
 
         List<Double> lcgList = new ArrayList<>();
-        List<Double> xorshiftList = new ArrayList<>();
         List<Double> xorshiftAList = new ArrayList<>();
         List<Double> xorshiftPList = new ArrayList<>();
 
         for (int i  = 0; i < 10000 ; i++){
             lcgList.add(lcg.getNumber());
             xorshiftAList.add(xorshiftAsterisk.getNumber());
-            xorshiftList.add(xorshift.getNumber());
             xorshiftPList.add(xorshiftPlus.getNumber());
         }
 
@@ -62,15 +59,6 @@ public class Main {
                 "\n    empirical variance = " + lcgEmpiricalVariance
         );
 
-        double xorshiftEmpiricalMean = getMean(xorshiftList);
-        double xorshiftEmpiricalVariance = getVariance(xorshiftList, xorshiftEmpiricalMean);
-        System.out.println("Xorshift: " +
-                "\n    theoretical mean = " + getTheoreticalMean(a, b) +
-                "\n    empirical mean = " + xorshiftEmpiricalMean +
-                "\n    theoretical variance = " + getTheoreticalVariance(a, b) +
-                "\n    empirical variance = " + xorshiftEmpiricalVariance
-        );
-
         double xorshiftAEmpiricalMean = getMean(xorshiftAList);
         double xorshiftAEmpiricalVariance = getVariance(xorshiftAList, xorshiftAEmpiricalMean);
         System.out.println("Xorshift+: " +
@@ -79,7 +67,6 @@ public class Main {
                 "\n    theoretical variance = " + getTheoreticalVariance(a, b) +
                 "\n    empirical variance = " + xorshiftAEmpiricalVariance
         );
-
         double xorshiftPEmpiricalMean = getMean(xorshiftPList);
         double xorshiftPEmpiricalVariance = getVariance(xorshiftPList, xorshiftPEmpiricalMean);
         System.out.println("Xorshift*: "+
@@ -91,7 +78,6 @@ public class Main {
 
         List<List<Double>> data = new ArrayList<>();
         data.add(lcgList);
-        data.add(xorshiftList);
         data.add(xorshiftAList);
         data.add(xorshiftPList);
 

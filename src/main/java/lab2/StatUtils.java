@@ -31,4 +31,17 @@ public class StatUtils {
     public static double getTheoreticalVariance(double a, double b){
         return Math.pow(b-a, 2)/12;
     }
+
+    public static void printStatInfo(String distributionName,
+                                     Double mean,
+                                     Double variance,
+                                     Double thereticalMean,
+                                     Double theareticalVariance){
+        System.out.println(distributionName +
+                "\n    theoretical mean = " + thereticalMean +
+                "\n    empirical mean = " + mean +
+                "\n    theoretical variance = " +  theareticalVariance +
+                "\n    empirical variance = " + variance
+        );
+    }
 }

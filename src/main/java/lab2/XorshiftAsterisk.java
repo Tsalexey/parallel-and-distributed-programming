@@ -12,20 +12,23 @@ public class XorshiftAsterisk implements RandomGenerator {
     long y;
     long m = (long)(Math.pow(2, 63)-1);
     Long seed = null;
+    boolean withNegative;
 
-    public XorshiftAsterisk(){
+    public XorshiftAsterisk(boolean withNegative){
         SecureRandom secureRandom = new SecureRandom();
         byte bytes[] = new byte[20];
         secureRandom.nextBytes(bytes);
         seed = Longs.fromByteArray(bytes);
         x = this.seed;
         y = this.seed;
+        this.withNegative = withNegative;
     }
 
     public XorshiftAsterisk(byte[] seed){
         this.seed = Longs.fromByteArray(seed);
         x = this.seed;
         y = this.seed;
+        this.withNegative = false;
     }
 
     public double getNumber() {
@@ -34,7 +37,6 @@ public class XorshiftAsterisk implements RandomGenerator {
         x ^= x >>> 27;
         y = x*2685821657736338717L;
 
-        return ((double)((x + 2685821657736338717L) & 0x7fffffffffffffffL))/(double)m;
-//        return (BigDecimal.valueOf(x).multiply(BigDecimal.valueOf(2685821657736338717L))).divide(BigDecimal.valueOf(m), MathContext.DECIMAL64).doubleValue();
+        return withNegative ? ((double)((x + 2685821657736338717L)))/(double)m : ((double)((x + 2685821657736338717L) & 0x7fffffffffffffffL))/(double)m;
     }
 }

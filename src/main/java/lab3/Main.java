@@ -2,12 +2,14 @@ package lab3;
 
 import lab2.XorshiftAsterisk;
 import lab2.XorshiftPlus;
+import lab4.ExponentialGenertor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static lab2.OutputUtils.printFile;
 import static lab2.StatUtils.*;
+import static lab4.ThreadUtil.executeThreads;
 
 /**
  * Created by Alexey on 10.09.2017.
@@ -23,28 +25,20 @@ public class Main {
      сгенерировать одинаковую последовательность чисел.
      */
     public static void main(String[] args) throws InterruptedException {
-        int threadsCount = 4;
-        int numbersToGenerateForThread = 4;
-        MutexGenerator generator = new MutexGenerator(new XorshiftPlus());
+        int threadsCount = 16;
+        int numbersToGenerateForThread = 20;
 
-        List<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < threadsCount; i++){
-            Thread t = new Thread(new RandomGeneratorThread(generator, numbersToGenerateForThread));
-            threads.add(t);
+        MutexGenerator uniformGenerator = new MutexGenerator(new XorshiftPlus(false));
+        uniformGenerator = executeThreads(uniformGenerator, threadsCount, numbersToGenerateForThread);
+
+        System.out.println("First 15 generated numbers:");
+        for (int i = 0; i < uniformGenerator.getGeneratedNumbers().size(); i++) {
+            if (i < 15 && i < uniformGenerator.getGeneratedNumbers().size())
+                System.out.println("    " + uniformGenerator.getGeneratedNumbers().get(i));
         }
 
-        threads.forEach(Thread::start);
-        for (Thread t: threads){
-            t.join();
-        }
-
-        System.out.println("Generated numbers:");
-        for (Double d: generator.getGeneratedNumbers()){
-            System.out.println("    " + d);
-        }
-
-        double xorshiftAEmpiricalMean = getMean(generator.getGeneratedNumbers());
-        double xorshiftAEmpiricalVariance = getVariance(generator.getGeneratedNumbers(), xorshiftAEmpiricalMean);
+        double xorshiftAEmpiricalMean = getMean(uniformGenerator.getGeneratedNumbers());
+        double xorshiftAEmpiricalVariance = getVariance(uniformGenerator.getGeneratedNumbers(), xorshiftAEmpiricalMean);
         System.out.println("\n    theoretical mean = " + getTheoreticalMean(0, 1) +
                 "\n    empirical mean = " + xorshiftAEmpiricalMean +
                 "\n    theoretical variance = " + getTheoreticalVariance(0, 1) +
@@ -52,7 +46,7 @@ public class Main {
         );
 
         List<List<Double>> result = new ArrayList<>();
-        result.add(generator.getGeneratedNumbers());
+        result.add(uniformGenerator.getGeneratedNumbers());
         printFile("src\\main\\java\\lab3\\result.dat", result);
 
     }
